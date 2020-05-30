@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+        <title>Storage</title>
+    {% endblock %}
+    {% block css %}
+        <link rel="stylesheet" href="{% static 'css/styles.css'%}">
+    {% endblock %}
+</head>
+<body>
+    <div class="container">
+        <div class="top">
+            <div class="header">
+                {% include 'mainapp/header.html' %}
+            </div>
+            {% block content %}
+            {% endblock %}
+        </div>
+        <div class="footer">
+            {% block footer %}
+
+            {% endblock %}
+        </div>
+    </div>
+    {% block script %}
+    {% endblock %}
+</body>
+</html>

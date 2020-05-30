@@ -17,7 +17,11 @@
                 <tr>
                     <td class="td-base td-id"> {{ item.id }} </td>
                     <td class="td-base td-img">
-                        <img class="img-preview" src="{{ item.image.url }}" alt="item img" title="{{ item.name }}">
+                        {% if item.image %}
+                            <img class="img-preview" src="{{ item.image.url }}" alt="item img" title="{{ item.name }}">
+                        {% else %}
+                            <span>No image</span>
+                        {% endif %}
                     </td>
                     <td class="td-base td-name">{{ item.name }}</td>
                     <td class="td-base td-price price"> {{ item.price }} </td>

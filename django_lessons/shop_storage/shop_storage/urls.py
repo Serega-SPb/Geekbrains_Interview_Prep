@@ -24,6 +24,7 @@ urlpatterns = [
     url('admin/', admin.site.urls),
     url('^$', mainapp.ItemList.as_view(), name='index'),
     url('^add/$', mainapp.ItemCreate.as_view(), name='add_item'),
+    url('^api/', include('mainapp.urls')),
 ]
 
 if settings.DEBUG:

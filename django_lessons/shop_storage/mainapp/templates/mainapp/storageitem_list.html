@@ -1,0 +1,33 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+    <div class="content">
+        <h1 class="page-header">Items</h1>
+        <table border="1">
+            <thead>
+            <tr>
+                <th class="td-id">Id</th>
+                <th class="td-img">Img</th>
+                <th class="td-name">Name</th>
+                <th class="td-price">Price</th>
+                <th class="td-quantity">Quantity</th>
+            </tr>
+            </thead>
+            {% for item in object_list %}
+                <tr>
+                    <td class="td-base td-id"> {{ item.id }} </td>
+                    <td class="td-base td-img">
+                        {% if item.image %}
+                            <img class="img-preview" src="{{ item.image.url }}" alt="item img" title="{{ item.name }}">
+                        {% else %}
+                            <span>No image</span>
+                        {% endif %}
+                    </td>
+                    <td class="td-base td-name">{{ item.name }}</td>
+                    <td class="td-base td-price price"> {{ item.price }} </td>
+                    <td class="td-base td-quantity"> {{ item.quantity }} </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

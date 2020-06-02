@@ -24,6 +24,8 @@ urlpatterns = [
     url('admin/', admin.site.urls),
     url('^$', mainapp.ItemList.as_view(), name='index'),
     url('^add/$', mainapp.ItemCreate.as_view(), name='add_item'),
+    url('^add_ajax/', mainapp.AddItemMixin.as_view(), name='add_ajax'),
+    url('^update_items/', mainapp.ItemList.as_view(), name='update_items'),
     url('^api/', include('mainapp.urls')),
 ]
 

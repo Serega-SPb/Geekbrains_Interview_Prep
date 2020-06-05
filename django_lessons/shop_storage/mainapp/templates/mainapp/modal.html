@@ -1,0 +1,13 @@
+<div id="modal-win" class="modal">
+    <div class="modal-content">
+        <h1 class="page-header">Add item</h1>
+        <form id="add-form" method="post" action="{% url 'add_item' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="modal-btns">
+                <button id="save-modal" type="submit">Add</button>
+                <button id="close-modal" type="reset">Close</button>
+            </div>
+        </form>
+    </div>
+</div>

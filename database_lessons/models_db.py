@@ -14,7 +14,7 @@ class Category(Base):
     __tablename__ = 'categories'
 
     category_name = Column(String, primary_key=True)
-    category_description = Column(String)
+    category_description = Column(String, nullable=False)
 
     def __init__(self, name, desc):
         self.category_name = name
@@ -52,7 +52,7 @@ class Good(Base):
     __tablename__ = 'goods'
 
     good_id = Column(Integer, primary_key=True)
-    good_name = Column(String)
+    good_name = Column(String, nullable=False)
     good_unit = Column(String, ForeignKey('units.unit'))
     good_cat = Column(String, ForeignKey('categories.category_name'))
 
@@ -69,7 +69,7 @@ class Employee(Base):
     __tablename__ = 'employees'
 
     employee_id = Column(Integer, primary_key=True)
-    employee_fio = Column(String)
+    employee_fio = Column(String, nullable=False)
     employee_position = Column(String, ForeignKey('positions.position'))
 
     def __init__(self, fio, position):
@@ -84,11 +84,11 @@ class Vendor(Base):
     __tablename__ = 'vendors'
 
     vendor_id = Column(Integer, primary_key=True)
-    vendor_name = Column(String)
-    vendor_ownerchipform = Column(String)
-    vendor_address = Column(String)
-    vendor_phone = Column(String)
-    vendor_email = Column(String)
+    vendor_name = Column(String, nullable=False)
+    vendor_ownerchipform = Column(String, nullable=False)
+    vendor_address = Column(String, nullable=False)
+    vendor_phone = Column(String, nullable=False)
+    vendor_email = Column(String, nullable=False)
 
     def __init__(self, name, ownerchipform, address, phone, email):
         self.vendor_name = name

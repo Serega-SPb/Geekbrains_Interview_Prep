@@ -1,0 +1,45 @@
+#: kivy 1.11.1
+
+#:set color_back (0.8, 0.8, 0.8, 1)
+#:set color_text (0.13, 0.13, 0.13, 1)
+#:set color_text_hex '212121'
+
+#:set color_border (0.13, 0.13, 0.13, 1)
+#:set color_tab_inactive (0.65, 0.65, 0.65, 1)
+#:set color_tab_active (0.5, 0.5, 0.5, 1)
+
+#:set color_table_back (0, 0, 0, 1)
+
+
+<BackgroundedBox@BoxLayout>:
+    background_color: None
+    canvas.before:
+        Color:
+            rgba: self.background_color or color_back
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<CustomLabel@Label>
+    font_size: 22
+    color: color_text
+    markup: True
+    size_hint: None, 1
+    font_size: '20sp'
+
+<StripLayout>
+    padding: 0, 0, 0, 0
+    canvas:
+
+<TabbedPanelHeader>:
+    background_normal: ''
+    background_color: color_tab_active if self.state == 'down' else color_tab_inactive
+
+
+<TabBox@BackgroundedBox>:
+    canvas.before:
+        Color:
+            rgba: color_border
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height

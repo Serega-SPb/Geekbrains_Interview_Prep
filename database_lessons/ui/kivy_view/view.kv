@@ -1,0 +1,15 @@
+#: kivy 1.11.1
+#: include ui\\kivy_view\\view_ui.kv
+
+BackgroundedBox:
+    id: main
+    padding: 5
+    orientation: 'vertical'
+    popup: open_dialog_popup.__self__
+    DbPath:
+        db_path: app.db_path
+    DbTabs:
+        tabs: app.table_models
+    OpenFilePopup:
+        id: open_dialog_popup
+        on_parent: if self.parent == main: main.remove_widget(self)

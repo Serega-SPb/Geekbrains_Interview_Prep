@@ -1,0 +1,137 @@
+#: kivy 1.11.1
+#: import join os.path.join
+#: include ui\\kivy_view\\custom_widgets.kv
+
+
+<DbPath@BoxLayout>:
+    db_path: ''
+    size_hint_y: None
+    height: 35
+    CustomLabel:
+        text: 'Db path'
+    TextInput:
+        text: root.db_path
+        readonly: True
+    Button:
+        size_hint_x: None
+        width: 35
+        text: '...'
+        on_press: app.open_popup_dialog()
+
+<DbTabs>:
+
+<DbTab>:
+    text: root.title
+    popup: add_popup.__self__
+    TabBox:
+        id: tab
+        orientation: 'vertical'
+        background_color: color_table_back
+        DbTable:
+            hub: root.hub
+            headers: root.table_headers
+            objects: root.table_data
+        BoxLayout:
+            size_hint_y: None
+            height: dp(56)
+            orientation: 'horizontal'
+            Button:
+                text: 'Add'
+                on_press: root.add_btn_click()
+            Button:
+                text: 'Remove'
+                on_press: root.remove_btn_click()
+        AddDataPopup:
+            id: add_popup
+            fields: root.table_headers
+            on_parent: if self.parent == tab: tab.remove_widget(self)
+
+
+<DbTable>:
+    orientation: 'vertical'
+    TableRow:
+        hub: root.hub
+        background_color: (0.5, 0.5, 0.5, 1)
+        is_header: True
+        size_hint_y: None
+        height: dp(56)
+        values: root.headers
+    RecycleView:
+        data: root.data
+        viewclass: "TableRow"
+        RecycleBoxLayout:
+            default_size: None, dp(56)
+            default_size_hint: 1, None
+            size_hint_y: None
+            height: self.minimum_height
+            orientation: 'vertical'
+
+<TableRow>:
+    is_header: False
+    background_color: (0.9, 0.9, 0.9, 1)
+
+<TableCell>:
+    is_header: False
+    group: 'cell'
+    state: cell_btn.state
+    background_color: color_back
+    padding: 1
+    StackLayout:
+        ToggleButton:
+            id: cell_btn
+            group: root.group
+            size_hint_x: 0 if root.is_header else 1
+            size_hint_y: 0 if root.is_header else 1
+            opacity: 0 if root.is_header else 1
+            background_color: (2, 2, 2, 1) if self.state == 'normal' else (1,1,1,1)
+            color: 0, 0, 0, 1
+            text: root.text
+            on_state: root.on_state_changed()
+        BackgroundedBox:
+            size_hint_x: 1 if root.is_header else 0
+            size_hint_y: 1 if root.is_header else 0
+            opacity: 1 if root.is_header else 0
+            background_color: root.background_color
+            CustomLabel:
+                color: (0, 0, 0, 1)
+                size_hint_x: 1
+                text: root.text
+
+<OpenFilePopup@Popup>:
+    title: 'Open db file'
+    FileChooserListView:
+        id: file_dialog
+        path: '.'
+        on_submit: app.apply_path(join(self.path, self.selection[0]))
+
+<AddDataPopup@Popup>:
+    container: fields_container.__self__
+    ok: ok_btn
+    cancel: cancel_btn
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            id: fields_container
+            orientation: 'vertical'
+        BoxLayout:
+            Button:
+                id: ok_btn
+                text: 'Ok'
+                height: dp(56)
+                size_hint: 1, None
+            Button:
+                id: cancel_btn
+                text: 'Cancel'
+                height: dp(56)
+                size_hint: 1, None
+
+<AddRow>:
+    Label:
+        text: root.title
+        height: dp(56)
+        size_hint: 1, None
+    TextInput:
+        text: root.value
+        on_text: root.value = self.text
+        height: dp(56)
+        size_hint: 1, None

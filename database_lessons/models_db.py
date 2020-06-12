@@ -10,6 +10,10 @@ def get_repr(obj):
     return f'<{obj.__class__.__name__}({fiels_str})>'
 
 
+def get_columns(obj):
+    return (col.name for col in obj.__table__.columns)
+
+
 class Category(Base):
     __tablename__ = 'categories'
 

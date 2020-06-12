@@ -1,7 +1,10 @@
+import threading
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session, aliased
 
 from models_db import Base, Category, Unit, Position, Good, Employee, Vendor
+from models_db import get_columns
 
 
 def transaction(func):
@@ -20,7 +23,16 @@ def transaction(func):
 
 class DbManager:
     DB_PATH = 'storage.db'
-    _session = None
+    sessions = {}
+
+    TABLE_CLS = {
+        Category.__tablename__: Category,
+        Unit.__tablename__: Unit,
+        Position.__tablename__: Position,
+        Good.__tablename__: Good,
+        Employee.__tablename__: Employee,
+        Vendor.__tablename__: Vendor
+    }
 
     def __init__(self, db_file=None):
         self.set_database(db_file)
@@ -32,33 +44,62 @@ class DbManager:
         self.session_factory = sessionmaker(bind=self.database_engine)
 
     @property
+    def tables(self):
+        return tuple(self.TABLE_CLS.keys())
+
+    def get_table_columns(self, table_name):
+        return get_columns(self.TABLE_CLS[table_name])
+
+    @property
     def session(self):
-        if self._session is None:
-            self._session = scoped_session(self.session_factory)()
-        return self._session
+        thread = threading.current_thread().name
+        if thread in self.sessions:
+            return self.sessions[thread]
+        else:
+            session = scoped_session(self.session_factory)()
+            self.sessions[thread] = session
+            return session
+
+    def __check_table_type(self, value):
+        if type(value) == type(Base):
+            return value
+        return self.TABLE_CLS.get(value)
 
     def get_table_data(self, table_cls):
+        table_cls = self.__check_table_type(table_cls)
         return self.session.query(table_cls).all()
 
     def select_by_key(self, table_cls, key):
+        table_cls = self.__check_table_type(table_cls)
         return self.session.query(table_cls).get(key)
 
     def select_by_column(self, table_cls, column, value):
+        table_cls = self.__check_table_type(table_cls)
         return self.session.query(table_cls).filter_by(**{column: value}).first()
 
     @transaction
     def insert_in_table(self, table_cls, data):
+        table_cls = self.__check_table_type(table_cls)
         ins = table_cls(*data)
         self.session.add(ins)
         return ins
 
     @transaction
-    def clear_table(self, tbl_cls):
-        self.session.query(tbl_cls).delete()
+    def update_data_in_table(self, table_cls, key, data_pair):
+        table_cls = self.__check_table_type(table_cls)
+        obj = self.session.query(table_cls).get(key)
+        if obj:
+            [setattr(obj, k, v) for k, v in data_pair.items()]
 
     @transaction
-    def delete_by_key(self, tbl_cls, key):
-        obj = self.session.query(tbl_cls).get(key)
+    def clear_table(self, table_cls):
+        table_cls = self.__check_table_type(table_cls)
+        self.session.query(table_cls).delete()
+
+    @transaction
+    def delete_by_key(self, table_cls, key):
+        table_cls = self.__check_table_type(table_cls)
+        obj = self.session.query(table_cls).get(key)
         if obj:
             self.session.delete(obj)
 
@@ -124,5 +165,3 @@ def test_goods(db_man):
 if __name__ == '__main__':
     db = DbManager()
     test_goods(db)
-
-

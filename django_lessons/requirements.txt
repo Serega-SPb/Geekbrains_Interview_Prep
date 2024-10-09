@@ -1,4 +1,4 @@
-Django==3.2.25
+Django==4.2.16
 django-rest-framework==0.1.0
 djangorestframework==3.15.2
 Pillow==10.3.0
